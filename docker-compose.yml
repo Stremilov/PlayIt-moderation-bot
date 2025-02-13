@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  moderation-playit-bot:
+    build: .
+#    networks:
+#      - skynet
+#
+#networks:
+#  skynet:
+#    external: true
