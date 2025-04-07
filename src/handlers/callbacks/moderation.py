@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 
 moderation_router = Router()
 
-API_URL = "http://localhost:8000/playit/auth/users/balance"
+API_URL = "http://playit-auth-backend:8000/playit/auth/users/balance"
 
 
 async def send_status_to_api(status: str, task_id: int, user_id: int, value: int = None):
