@@ -9,7 +9,7 @@ moderation_router = Router()
 API_URL = "http://localhost:8000/playit/auth/users/balance"
 
 
-async def send_status_to_api(status: str, task_id: int, user_id: int, value: int = None):
+async def send_status_to_api(status: str, task_id: int, user_id: int, value: int = None, token = None):
     json_data = {
         "status": status,
         "task_id": task_id,
@@ -19,9 +19,11 @@ async def send_status_to_api(status: str, task_id: int, user_id: int, value: int
     if value is not None:
         json_data["value"] = value
 
+    cookies = {"jwt-token": token}
+
     async with ClientSession() as session:
         try:
-            async with session.patch(API_URL, json=json_data) as response:
+            async with session.patch(API_URL, json=json_data, cookies=cookies) as response:
                 print(response.status)
                 print(await response.json())
                 if response.status != 200:
@@ -35,9 +37,9 @@ async def send_status_to_api(status: str, task_id: int, user_id: int, value: int
 
 @moderation_router.callback_query(F.data.startswith("approve_"))
 async def process_department_choice(callback: CallbackQuery):
-    task_id, user_id, value = map(int, callback.data.split("_")[1:4])
+    task_id, user_id, value, token = map(int, callback.data.split("_")[1:5])
     print(task_id, user_id, value)
-    result = await send_status_to_api("approved", task_id, user_id, value)
+    result = await send_status_to_api(status="approved", task_id=task_id, user_id=user_id, value=value, token=token)
     print(result)
     if result:
         await callback.message.delete()
