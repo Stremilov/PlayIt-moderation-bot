@@ -49,8 +49,9 @@ async def process_department_choice(callback: CallbackQuery):
 @moderation_router.callback_query(F.data.startswith("reject_"))
 async def process_department_choice2(callback: CallbackQuery):
     task_id, user_id = map(int, callback.data.split("_")[1:3])
+    value = 0
 
-    if await send_status_to_api("rejected", task_id, user_id):
+    if await send_status_to_api(status="rejected", task_id=task_id, user_id=user_id, value=value):
         await callback.message.delete()
     else:
         await callback.answer("Ошибка при отправке данных", show_alert=True)
